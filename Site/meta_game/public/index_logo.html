@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<!-- Página principal da Meta Game Store sem carrinho e sem barra de pesquisa -->
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <title>Meta Game</title>
+  <!-- Importa Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <!-- Botão flutuante para popular o banco com 100 cartas de teste -->
+  <button id="btnSeedCartas" class="fixed bottom-4 right-4 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg shadow-lg z-50 hidden">
+    Adicionar 100 cartas
+  </button>
+
+  <!-- Cabeçalho com logo, horários e links de redes sociais -->
+  <header class="sticky top-0 bg-[#0B1F3A] text-white p-2 shadow-md z-50">
+    <div class="flex items-center justify-between gap-3 w-full">
+      <div class="flex items-center gap-3">
+        <img src="../img/logo.png" alt="Logo Meta Game" class="h-20 w-auto object-contain" />
+        <div>
+          <h1 class="text-2xl font-bold">META GAME STORE</h1>
+          <p class="text-sm">Magic - Yu-Gi-Oh - Pokémon</p>
+        </div>
+      </div>
+      <div class="text-center text-sm hidden md:block">
+        <p>Terça e Quinta: 19h às 22h</p>
+        <p>Sábado: 14h às 19h</p>
+      </div>
+      <div class="flex gap-2">
+        <a href="https://www.instagram.com/metagamestore43" target="_blank" class="bg-pink-600 hover:bg-pink-700 text-white px-3 py-1 rounded">Instagram</a>
+        <a href="https://wa.me/5599999999999" target="_blank" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">WhatsApp</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Aviso dinâmico de status da loja -->
+  <div id="avisoLoja" class="text-center p-4 font-bold text-white bg-green-600 sticky top-20 z-50">
+    A loja está <span id="statusLoja">aberta</span> agora!
+  </div>
+
+  <!-- Barra de filtros por nicho e tipo (não há barra de pesquisa) -->
+  <div class="p-4 bg-[#E5E7EB] shadow sticky top-16 z-40 flex gap-2">
+    <select id="filtroNicho" class="p-2 border rounded text-black" onchange="aplicarFiltros()">
+      <option value="">Todos os nichos</option>
+      <option value="Magic">Magic</option>
+      <option value="Yu-Gi-Oh">Yu-Gi-Oh</option>
+      <option value="Pokémon">Pokémon</option>
+    </select>
+    <select id="filtroTipo" class="p-2 border rounded text-black" onchange="aplicarFiltros()">
+      <option value="">Todos os tipos</option>
+      <option value="Booster Box">Booster Box</option>
+      <option value="Booster avulso">Booster Avulso</option>
+      <option value="Cartas">Cartas</option>
+    </select>
+  </div>
+
+  <!-- Seções principais que exibem as cartas agrupadas -->
+  <main class="p-6 space-y-12">
+    <section id="magic" class="space-y-4">
+      <h2 class="text-2xl font-bold border-b-2 border-[#0074E4]">Magic: The Gathering</h2>
+      <div id="magic-cartas" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+    </section>
+    <section id="yugioh" class="space-y-4">
+      <h2 class="text-2xl font-bold border-b-2 border-red-600">Yu-Gi-Oh</h2>
+      <div id="yugioh-cartas" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+    </section>
+    <section id="pokemon" class="space-y-4">
+      <h2 class="text-2xl font-bold border-b-2 border-yellow-400">Pokémon</h2>
+      <div id="pokemon-cartas" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+    </section>
+  </main>
+
+  <!-- Mural de eventos futuros da loja -->
+  <section class="p-6 bg-white shadow-md rounded-xl max-w-4xl mx-auto mt-12 text-black">
+    <h2 class="text-2xl font-bold mb-4 text-[#0B1F3A]">🗓️ Mural de Eventos</h2>
+    <ul class="space-y-2 list-disc list-inside">
+      <li><strong>Sábado - 15/06:</strong> Torneio Modern - Magic: The Gathering às 15h</li>
+      <li><strong>Terça - 18/06:</strong> Encontro Casual de Yu-Gi-Oh às 19h</li>
+      <li><strong>Quinta - 20/06:</strong> Pokémon TCG Mini Cup às 20h</li>
+    </ul>
+  </section>
+
+  <!-- Rodapé da página -->
+  <footer class="bg-[#0B1F3A] text-white text-center p-4 mt-10">
+    <p>© 2025 Meta Game Store. Todos os direitos reservados.</p>
+  </footer>
+
+  <!-- Script: botões de seed, carregamento de cartas e filtros -->
+  <script>
+    // Mostra ou esconde o status "aberta/fechada" de acordo com dia e hora em Brasília
+    function verificarHorarioLoja() {
+      const agoraUTC = new Date();
+      const horaBrasilia = new Date(agoraUTC.getTime() - 3 * 60 * 60 * 1000); // UTC-3
+      const dia = horaBrasilia.getDay();
+      const hora = horaBrasilia.getHours();
+      let aberta = false;
+      if ((dia === 2 || dia === 4) && hora >= 19 && hora < 22) aberta = true;
+      if (dia === 6 && hora >= 14 && hora < 19) aberta = true;
+      const aviso = document.getElementById("avisoLoja");
+      const status = document.getElementById("statusLoja");
+      if (aberta) {
+        aviso.classList.remove("bg-red-600");
+        aviso.classList.add("bg-green-600");
+        status.textContent = "aberta";
+      } else {
+        aviso.classList.remove("bg-green-600");
+        aviso.classList.add("bg-red-600");
+        status.textContent = "fechada";
+      }
+    }
+
+    // Atualiza a cada minuto
+    verificarHorarioLoja();
+    setInterval(verificarHorarioLoja, 60000);
+
+    // Armazena localmente todas as cartas provenientes da API
+    let todasCartas = [];
+
+    // Puxa dados do backend e desenha na tela
+    async function carregarCartas() {
+      const res = await fetch("http://localhost:3000/api/cartas");
+      todasCartas = await res.json();
+      exibirCartas(todasCartas);
+    }
+
+    // Cria elementos para exibir cartas agrupadas por nicho
+    function exibirCartas(cartas) {
+      const grupos = {
+        "Magic": document.getElementById("magic-cartas"),
+        "Yu-Gi-Oh": document.getElementById("yugioh-cartas"),
+        "Pokémon": document.getElementById("pokemon-cartas")
+      };
+      Object.values(grupos).forEach(container => (container.innerHTML = ""));
+      cartas.forEach(carta => {
+        const card = document.createElement("div");
+        card.className = "bg-[#E5E7EB] rounded-xl shadow-md overflow-hidden";
+        card.innerHTML = `
+          <img src="${carta.imagem}" class="w-full h-64 object-cover" />
+          <div class="p-4">
+            <h3 class="text-lg font-semibold">${carta.nome}</h3>
+            <p class="text-sm text-[#374151]">${carta.tipo}</p>
+            <p class="font-bold text-green-500 mt-2">R$ ${parseFloat(carta.preco).toFixed(2)}</p>
+          </div>
+        `;
+        grupos[carta.nicho]?.appendChild(card);
+      });
+    }
+
+    // Filtra cartas usando os selects de nicho e tipo
+    function aplicarFiltros() {
+      const nicho = document.getElementById("filtroNicho").value;
+      const tipo = document.getElementById("filtroTipo").value;
+      const filtradas = todasCartas.filter(c =>
+        (nicho === "" || c.nicho === nicho) &&
+        (tipo === "" || c.tipo === tipo)
+      );
+      exibirCartas(filtradas);
+    }
+
+    // Popula rapidamente o banco com 100 cartas de teste
+    async function adicionarCartasEmLote() {
+      for (let i = 1; i <= 100; i++) {
+        const carta = {
+          nome: `Carta Teste ${i}`,
+          preco: (Math.random() * 50 + 5).toFixed(2),
+          tipo: ["Booster Box", "Booster avulso", "Cartas"][Math.floor(Math.random() * 3)],
+          nicho: ["Magic", "Yu-Gi-Oh", "Pokémon"][Math.floor(Math.random() * 3)],
+          imagem: `https://via.placeholder.com/300x400.png?text=Carta+${i}`
+        };
+        await fetch("http://localhost:3000/api/cartas", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(carta)
+        });
+        console.log(`Carta ${i} adicionada`);
+      }
+      alert("100 cartas adicionadas com sucesso!");
+      carregarCartas();
+    }
+
+    // Liga o botão de seed ao método acima
+    document.getElementById("btnSeedCartas").addEventListener("click", adicionarCartasEmLote);
+
+    // Função utilitária para revelar o botão de seed via console
+    window.mostrarBotaoSeed = () => document.getElementById("btnSeedCartas").classList.remove("hidden");
+
+    // Inicializa a lista de cartas ao carregar a página
+    carregarCartas();
+  </script>
+</body>
+</html>
